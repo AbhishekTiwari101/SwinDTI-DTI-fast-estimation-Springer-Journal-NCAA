@@ -1,4 +1,3 @@
-# --------------------------------------------------------
 # SwinDTI: swin transformer-based generalized fast estimation of diffusion tensor parameters from sparse data
 # Written by Abhishek Tiwari, Rajeev Kumar Singh & Saurabh J. Shigwan 
 #
