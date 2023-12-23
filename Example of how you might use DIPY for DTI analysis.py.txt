@@ -1,0 +1,49 @@
+# Example of how you might use DIPY for DTI analysis in Python
+
+
+# --------------------------------------------------------
+# SwinDTI: swin transformer-based generalized fast estimation of diffusion tensor parameters from sparse data
+# Written by Abhishek Tiwari, Rajeev Kumar Singh & Saurabh J. Shigwan 
+#
+# Journal: Neural Computing and Applications
+
+# Kindly Cite this article**
+Tiwari, A., Singh, R.K. & Shigwan, S.J. SwinDTI: swin transformer-based generalized fast estimation of diffusion tensor parameters from sparse data. Neural Comput & Applic (2023). https://doi.org/10.1007/s00521-023-09206-4
+
+#MIT License
+
+Copyright (c) 2023 ABHISHEK TIWARI
+
+#--------------------------------------------------------
+
+
+
+import numpy as np
+import nibabel as nib
+from dipy.io.image import load_nifti, save_nifti
+from dipy.segment.mask import median_otsu
+from dipy.reconst.dti import TensorModel
+
+# Load DWI data
+img, gtab = load_nifti('your_dwi_data.nii.gz')
+
+# Preprocess DWI data (e.g., denoising and masking)
+data, affine = img.get_fdata(), img.affine
+maskdata, mask = median_otsu(data, vol_idx=[0, 1], median_radius=4, numpass=2, autocrop=False)
+
+# Fit the tensor model
+tensor_model = TensorModel(gtab)
+tensor_fit = tensor_model.fit(data, mask)
+
+# Get the diffusion tensor metrics
+FA = tensor_fit.fa
+AD = tensor_fit.ad
+MD = tensor_fit.md
+
+# Now you can use these metrics as input to your neural network (Swin Transformer or any other architecture)
+# ...
+
+# Optionally, you can save the results
+save_nifti('FA.nii.gz', FA, affine)
+save_nifti('AD.nii.gz', AD, affine)
+save_nifti('MD.nii.gz', MD, affine)

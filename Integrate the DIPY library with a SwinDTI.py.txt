@@ -1,0 +1,72 @@
+# Example of integrate the DIPY library with a Swin Transformer for diffusion tensor imaging (DTI) fast estimation using either Keras or TensorFlow in Python.
+
+
+# --------------------------------------------------------
+# SwinDTI: swin transformer-based generalized fast estimation of diffusion tensor parameters from sparse data
+# Written by Abhishek Tiwari, Rajeev Kumar Singh & Saurabh J. Shigwan 
+#
+# Journal: Neural Computing and Applications
+
+# Kindly Cite this article**
+Tiwari, A., Singh, R.K. & Shigwan, S.J. SwinDTI: swin transformer-based generalized fast estimation of diffusion tensor parameters from sparse data. Neural Comput & Applic (2023). https://doi.org/10.1007/s00521-023-09206-4
+
+#MIT License
+
+Copyright (c) 2023 ABHISHEK TIWARI
+
+#--------------------------------------------------------
+Step 1: pip install dipy tensorflow keras
+#.....................................................
+
+Step 2:
+import numpy as np
+from dipy.io import read_bvals_bvecs, load_nifti
+from dipy.core.gradients import gradient_table
+from dipy.reconst.dti import TensorModel
+from sklearn.model_selection import train_test_split
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# Load your diffusion data, b-values, and b-vectors using DIPY
+# Replace 'your_data.nii.gz', 'your_bvals.bval', and 'your_bvecs.bvec' with your actual file paths
+data, affine = load_nifti('your_data.nii.gz')
+bvals, bvecs = read_bvals_bvecs('your_bvals.bval', 'your_bvecs.bvec')
+
+# Create a gradient table
+gtab = gradient_table(bvals, bvecs)
+
+# Fit the diffusion tensor model
+tensor_model = TensorModel(gtab)
+tensor_fit = tensor_model.fit(data)
+
+# Extract DTI features
+dti_params = tensor_fit.model_params
+
+# Now, you can use dti_params as input for your Swin Transformer-based model
+# Preprocess the data as needed and split it into training and testing sets
+# X_train, X_test, y_train, y_test = train_test_split(...)
+
+# Define your Swin Transformer model using Keras
+model = keras.Sequential([
+    # Add Swin Transformer layers and other necessary layers
+    # Customize the architecture based on your requirements
+    # ...
+
+    # Output layer based on your specific task (e.g., regression or classification)
+    layers.Dense(units=..., activation='...', name='output_layer')
+])
+
+# Compile the model
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse'])
+
+# Train the model
+model.fit(X_train, y_train, epochs=..., batch_size=...)
+
+# Evaluate the model
+loss, mse = model.evaluate(X_test, y_test)
+
+# Make predictions
+predictions = model.predict(X_test)
+ 
+
+
